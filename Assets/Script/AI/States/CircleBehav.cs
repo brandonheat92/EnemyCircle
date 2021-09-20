@@ -31,15 +31,20 @@ public class CircleBehav : ActorBaseState
     {
         base.OnUpdate();
 
-        m_Actor.transform.LookAt(new Vector3(m_Actor.TargetActor.transform.position.x, m_Actor.transform.position.y, m_Actor.TargetActor.transform.position.z));
-        
+        LookAt();
         MoveAround();
 
         float distance = Vector3.Distance(m_Actor.TargetActor.transform.position, m_Actor.transform.position);
         if (distance > 10)
             m_Actor.RequestState(Actor.eStates.Chase);
-        if (distance > 20)
-            m_Actor.RequestState(Actor.eStates.Wander);
+    }
+
+    void LookAt()
+    {
+        Vector3 lookAtDirection = (m_Actor.TargetActor.transform.position - m_Actor.transform.position);
+        lookAtDirection.y = 0;
+        Quaternion targetRotation = Quaternion.LookRotation(lookAtDirection);
+        m_Actor.transform.rotation = Quaternion.Slerp(m_Actor.transform.rotation, targetRotation, Time.deltaTime * 2);
     }
 
     void MoveAround()
@@ -58,7 +63,7 @@ public class CircleBehav : ActorBaseState
 
     IEnumerator ChangeDirection()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(4);
         
         m_MoveDirection = Random.Range(1, 10) % 2 == 0 ? Vector3.right : -Vector3.right;
     }
