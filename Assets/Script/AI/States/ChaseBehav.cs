@@ -18,7 +18,7 @@ public class ChaseBehav : ActorBaseState
         base.OnEnter();
         m_ChaseTarget = m_Actor.TargetActor;
         m_Actor.NavAgent.SetDestination(m_ChaseTarget.transform.position);
-        m_TriggerDistance = Random.Range(5,15);
+        m_TriggerDistance = Random.Range(5,9);
     }
 
     public override void OnUpdate()

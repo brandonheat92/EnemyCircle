@@ -11,7 +11,9 @@ public class Actor : StateMachineAdvance
         Wander, 
         Chase,
         Circle,
-        Attack
+        Attack,
+        Retreat,
+        Flee
     }
 
     public State[] m_States;
@@ -24,6 +26,16 @@ public class Actor : StateMachineAdvance
     private CharacterController     m_CharController;
 
 #region Properties
+    public Vector3 Position
+    {
+        get { return transform.position; }
+    }
+
+    public Vector3 TargetActorPosition
+    {
+        get { return TargetActor.transform.position; }
+    }
+
     public NavMeshAgent NavAgent
     {
         get { return m_NavMeshAgent; }
@@ -63,6 +75,8 @@ public class Actor : StateMachineAdvance
         RegisterState(new WanderBehav(this));
         RegisterState(new ChaseBehav(this));
         RegisterState(new CircleBehav(this));
+        RegisterState(new AttackBehav(this));
+        RegisterState(new RetreatBehav(this));
 
         RequestState(eStates.Idle);
 
@@ -86,5 +100,13 @@ public class Actor : StateMachineAdvance
             RequestState(eStates.Chase);
         }
 	}
-    
+
+    public void LookAtTargetActor()
+    {
+        Vector3 lookAtDirection = (TargetActorPosition - Position);
+        lookAtDirection.y = 0;
+        Quaternion targetRotation = Quaternion.LookRotation(lookAtDirection);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 2);
+    }
+
 }

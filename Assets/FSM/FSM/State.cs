@@ -14,13 +14,13 @@ public class State
 
     public virtual void OnEnter()
     {
-        Debug.Log("On Enter " + m_id);
+        Debug.Log("On Enter " + (Actor.eStates)m_id);
         m_timeEntered = Time.time;
     }
 
     public virtual void OnExit()
     {
-        Debug.Log("On Exit " + m_id);
+        Debug.Log("On Exit " + (Actor.eStates)m_id);
     }
 
     public virtual void OnUpdate()

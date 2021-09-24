@@ -16,7 +16,8 @@ public class CircleBehav : ActorBaseState
         m_Actor.Controller.enabled = true;
         m_Actor.RigidBody.velocity = Vector3.zero;
         
-        m_MoveDirection = Random.Range(1,10) % 2 == 0 ? Vector3.right : -Vector3.right;
+        m_Actor.StartCoroutine(InitialDelay());
+        //m_Actor.StartCoroutine(ChangeDirection());
     }
 
     public override void OnExit()
@@ -31,12 +32,15 @@ public class CircleBehav : ActorBaseState
     {
         base.OnUpdate();
 
-        LookAt();
+        m_Actor.LookAtTargetActor();
         MoveAround();
 
         float distance = Vector3.Distance(m_Actor.TargetActor.transform.position, m_Actor.transform.position);
         if (distance > 10)
             m_Actor.RequestState(Actor.eStates.Chase);
+
+        if (Input.GetKeyUp(KeyCode.O))
+            m_Actor.RequestState(Actor.eStates.Attack);
     }
 
     void LookAt()
@@ -54,9 +58,11 @@ public class CircleBehav : ActorBaseState
         Vector3 movedir = Vector3.zero;
 
         Vector3 finalDirection = Vector3.zero;
+
         finalDirection = (pDir * m_MoveDirection.normalized.x);
 
         movedir += finalDirection * 3 * Time.deltaTime;
+        movedir.y = 0;
 
         m_Actor.Controller.Move(movedir);
     }
@@ -64,7 +70,18 @@ public class CircleBehav : ActorBaseState
     IEnumerator ChangeDirection()
     {
         yield return new WaitForSeconds(4);
+
+        m_MoveDirection = Vector3.zero;
+
+        yield return new WaitForSeconds(1);
         
+        m_MoveDirection = Random.Range(1, 10) % 2 == 0 ? Vector3.right : -Vector3.right;
+    }
+
+    IEnumerator InitialDelay()
+    {
+        yield return new WaitForSeconds(2);
+
         m_MoveDirection = Random.Range(1, 10) % 2 == 0 ? Vector3.right : -Vector3.right;
     }
 
