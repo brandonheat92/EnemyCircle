@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,12 +14,14 @@ public class Actor : StateMachineAdvance
         Circle,
         Attack,
         Retreat,
-        Flee
+        Flee,
+        Cheer
     }
 
     public State[] m_States;
-
+    
     public float        m_WalkSpeed;
+    public float        m_RotationSpeed;
     public Rigidbody    m_Rigidbody;
     public GameObject   m_TargetObject;
 
@@ -65,10 +68,12 @@ public class Actor : StateMachineAdvance
 	public override void Awake ()
     {
         base.Awake();
-        m_Rigidbody = GetComponent<Rigidbody>();
-        m_NavMeshAgent = GetComponent<NavMeshAgent>();
-        m_CharController = GetComponent<CharacterController>();
-        m_CharController.enabled = false;   
+
+        m_Rigidbody                 = GetComponent<Rigidbody>();
+        m_NavMeshAgent              = GetComponent<NavMeshAgent>();
+        m_CharController            = GetComponent<CharacterController>();
+        m_CharController.enabled    = false;
+
 
         //Register states here
         RegisterState(new IdleBehav(this));
@@ -86,9 +91,9 @@ public class Actor : StateMachineAdvance
         {
             m_States[i] = m_allStates[i];
         }
-	}
+    }
 
-	public override void Update ()
+    public override void Update()
     {
         base.Update();
 
@@ -99,14 +104,13 @@ public class Actor : StateMachineAdvance
         {
             RequestState(eStates.Chase);
         }
-	}
-
-    public void LookAtTargetActor()
-    {
-        Vector3 lookAtDirection = (TargetActorPosition - Position);
-        lookAtDirection.y = 0;
-        Quaternion targetRotation = Quaternion.LookRotation(lookAtDirection);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 2);
     }
 
+    public void LookAtTargetActor(int inverseDirection = 1)
+    {
+        Vector3 lookAtDirection     = (TargetActorPosition - Position) * inverseDirection;
+        lookAtDirection.y           = 0;
+        Quaternion targetRotation   = Quaternion.LookRotation(lookAtDirection);
+        transform.rotation          = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * m_RotationSpeed);
+    }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class StateMachineAdvance : MonoBehaviour
 {
+    public bool m_IsDebug = false;
     protected List<State> m_allStates;
 
     State m_currentState;
@@ -25,13 +26,13 @@ public class StateMachineAdvance : MonoBehaviour
     {
         for(int i=0; i<m_allStates.Count; i++)
         {
-            if(m_allStates[i].m_id == state.m_id)
+            if(m_allStates[i].m_Id == state.m_Id)
             {
                 Debug.LogError("state already present");
                 return;
             }
         }
-        Debug.Log("Registered " + state.m_id);
+        Debug.Log("Registered " + state.m_Id);
         m_allStates.Add(state);
     }
 
@@ -68,7 +69,7 @@ public class StateMachineAdvance : MonoBehaviour
     {
         for(int i=0; i<m_allStates.Count; i++)
         {
-            if(m_allStates[i].m_id == id)
+            if(m_allStates[i].m_Id == id)
             {
                 m_requestedState = m_allStates[i];
                 return;

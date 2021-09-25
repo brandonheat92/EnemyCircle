@@ -13,7 +13,7 @@ public class IdleBehav : ActorBaseState
     {
         base.OnUpdate();
 
-        if(Time.time - m_timeEntered > 2.0f)
+        if(Time.time - m_TimeEntered > 2.0f)
         {
             m_Actor.RequestState(Actor.eStates.Wander);
         }

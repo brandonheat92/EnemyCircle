@@ -43,6 +43,7 @@ public class RetreatBehav : ActorBaseState
     void MoveBack()
     {
         Vector3 moveDir = (m_Actor.Position - m_Actor.TargetActorPosition).normalized * m_MovingSpeed * Time.deltaTime;
+        moveDir.y = 0;
         m_Actor.Controller.Move(moveDir);
     }
 }

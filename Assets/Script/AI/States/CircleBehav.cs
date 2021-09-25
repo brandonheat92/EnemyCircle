@@ -5,6 +5,7 @@ using UnityEngine;
 public class CircleBehav : ActorBaseState
 {
     Vector3 m_MoveDirection = Vector3.zero;
+    float m_RotateSpeed = 10;
 
     public CircleBehav(Actor actor) : base(actor, Actor.eStates.Circle)
     { }
@@ -17,7 +18,6 @@ public class CircleBehav : ActorBaseState
         m_Actor.RigidBody.velocity = Vector3.zero;
         
         m_Actor.StartCoroutine(InitialDelay());
-        //m_Actor.StartCoroutine(ChangeDirection());
     }
 
     public override void OnExit()
@@ -48,7 +48,7 @@ public class CircleBehav : ActorBaseState
         Vector3 lookAtDirection = (m_Actor.TargetActor.transform.position - m_Actor.transform.position);
         lookAtDirection.y = 0;
         Quaternion targetRotation = Quaternion.LookRotation(lookAtDirection);
-        m_Actor.transform.rotation = Quaternion.Slerp(m_Actor.transform.rotation, targetRotation, Time.deltaTime * 2);
+        m_Actor.transform.rotation = Quaternion.Slerp(m_Actor.transform.rotation, targetRotation, Time.deltaTime * m_RotateSpeed);
     }
 
     void MoveAround()
