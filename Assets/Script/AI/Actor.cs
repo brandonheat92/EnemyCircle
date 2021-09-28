@@ -82,6 +82,7 @@ public class Actor : StateMachineAdvance
         RegisterState(new CircleBehav(this));
         RegisterState(new AttackBehav(this));
         RegisterState(new RetreatBehav(this));
+        RegisterState(new CheerBehav(this));
 
         RequestState(eStates.Idle);
 
@@ -100,9 +101,9 @@ public class Actor : StateMachineAdvance
         // always last //
         SwitchState();
 
-        if (Input.GetKeyUp(KeyCode.P))
+        if (Input.GetKeyUp(KeyCode.P))          //TODO : think of a situation to change this 
         {
-            RequestState(eStates.Chase);
+            RequestState(eStates.Cheer);
         }
     }
 

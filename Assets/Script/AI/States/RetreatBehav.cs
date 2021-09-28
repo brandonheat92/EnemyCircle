@@ -19,6 +19,7 @@ public class RetreatBehav : ActorBaseState
         m_Actor.Controller.enabled  = true;
         m_BackingDistance           = Random.Range(6, 10);
         m_MovingSpeed               = Random.Range(1,10) % 2 == 0 ? 1 : 5;    //fast retreat or normal one
+        EventManager.Instance.TriggerEvent(EventType.ActorBehavChange, new ActorChangeBehavMessage(m_Actor, Actor.eStates.Retreat));
     }
 
     public override void OnUpdate()

@@ -15,6 +15,7 @@ public class AttackBehav : ActorBaseState
 
         m_Actor.NavAgent.enabled = false;
         m_Actor.Controller.enabled = true;
+        EventManager.Instance.TriggerEvent(EventType.ActorBehavChange, new ActorChangeBehavMessage(m_Actor, Actor.eStates.Attack));
     }
 
     public override void OnUpdate()

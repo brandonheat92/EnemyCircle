@@ -18,6 +18,7 @@ public class CircleBehav : ActorBaseState
         m_Actor.RigidBody.velocity = Vector3.zero;
         
         m_Actor.StartCoroutine(InitialDelay());
+        EventManager.Instance.TriggerEvent(EventType.ActorBehavChange, new ActorChangeBehavMessage(m_Actor, Actor.eStates.Circle));
     }
 
     public override void OnExit()
@@ -40,7 +41,7 @@ public class CircleBehav : ActorBaseState
             m_Actor.RequestState(Actor.eStates.Chase);
 
         if (Input.GetKeyUp(KeyCode.O))
-            m_Actor.RequestState(Actor.eStates.Attack);
+            m_Actor.RequestState(Actor.eStates.Cheer);
     }
 
     void LookAt()
