@@ -16,10 +16,11 @@ public class CheerBehav : ActorBaseState
     {
         base.OnEnter();
 
-        m_Actor.NavAgent.enabled = false;
-        m_Actor.NavAgent.updatePosition = false;
-        m_Actor.NavAgent.updateUpAxis = false;
-        m_Actor.Controller.enabled = true;
+        //m_Actor.NavAgent.enabled = false;
+        ////m_Actor.NavAgent.updatePosition = false;
+        ////m_Actor.NavAgent.updateUpAxis = false;
+        //m_Actor.Controller.enabled = true;
+        EventManager.Instance.TriggerEvent(EventType.ActorBehavChange, new ActorChangeBehavMessage(m_Actor, Actor.eStates.Cheer));
     }
 
     public override void OnUpdate()
@@ -41,13 +42,22 @@ public class CheerBehav : ActorBaseState
     {
         base.OnExit();
 
-        m_Actor.NavAgent.enabled = true;
-        m_Actor.NavAgent.updatePosition = true;
-        m_Actor.NavAgent.updateUpAxis = true;
-        m_Actor.Controller.enabled = false;
+        //m_Actor.NavAgent.enabled = true;
+        ////m_Actor.NavAgent.updatePosition = true;
+        ////m_Actor.NavAgent.updateUpAxis = true;
+        //m_Actor.Controller.enabled = false;
     }
 
     void Cheer()
     {
+        m_Actor.StartCoroutine(CheerColor());
+    }
+
+    IEnumerator CheerColor()
+    {
+        Color col = m_Actor.GetComponent<MeshRenderer>().material.color;
+        m_Actor.GetComponent<MeshRenderer>().material.color = Color.red;
+        yield return new WaitForSeconds(1);
+        m_Actor.GetComponent<MeshRenderer>().material.color = col;
     }
 }

@@ -5,7 +5,8 @@ using UnityEngine;
 public class CircleBehav : ActorBaseState
 {
     Vector3 m_MoveDirection = Vector3.zero;
-    float m_RotateSpeed = 10;
+    float m_RotateSpeed     = 10;
+    float m_MovementSpeed   = 2;
 
     public CircleBehav(Actor actor) : base(actor, Actor.eStates.Circle)
     { }
@@ -18,6 +19,7 @@ public class CircleBehav : ActorBaseState
         m_Actor.RigidBody.velocity = Vector3.zero;
         
         m_Actor.StartCoroutine(InitialDelay());
+        m_Actor.StartCoroutine(ChangeDirection());
         EventManager.Instance.TriggerEvent(EventType.ActorBehavChange, new ActorChangeBehavMessage(m_Actor, Actor.eStates.Circle));
     }
 
@@ -37,11 +39,12 @@ public class CircleBehav : ActorBaseState
         MoveAround();
 
         float distance = Vector3.Distance(m_Actor.TargetActor.transform.position, m_Actor.transform.position);
-        if (distance > 10)
-            m_Actor.RequestState(Actor.eStates.Chase);
 
-        if (Input.GetKeyUp(KeyCode.O))
-            m_Actor.RequestState(Actor.eStates.Cheer);
+        if (distance < m_Actor.ThresholdDistance - 2)       // TODO find and fix this offset value
+            m_Actor.RequestState(Actor.eStates.Retreat);
+
+        if (distance > m_Actor.ThresholdDistance + 2)       // TODO find and fix this offset value
+            m_Actor.RequestState(Actor.eStates.Chase);
     }
 
     void LookAt()
@@ -62,7 +65,7 @@ public class CircleBehav : ActorBaseState
 
         finalDirection = (pDir * m_MoveDirection.normalized.x);
 
-        movedir += finalDirection * 3 * Time.deltaTime;
+        movedir += finalDirection * m_MovementSpeed * Time.deltaTime;
         movedir.y = 0;
 
         m_Actor.Controller.Move(movedir);
@@ -70,13 +73,16 @@ public class CircleBehav : ActorBaseState
 
     IEnumerator ChangeDirection()
     {
-        yield return new WaitForSeconds(4);
+        while (true)
+        {
+            yield return new WaitForSeconds(4);
 
-        m_MoveDirection = Vector3.zero;
+            m_MoveDirection = Vector3.zero;
 
-        yield return new WaitForSeconds(1);
-        
-        m_MoveDirection = Random.Range(1, 10) % 2 == 0 ? Vector3.right : -Vector3.right;
+            yield return new WaitForSeconds(1);
+
+            m_MoveDirection = Random.Range(1, 10) % 2 == 0 ? Vector3.right : -Vector3.right;
+        }
     }
 
     IEnumerator InitialDelay()
@@ -85,15 +91,4 @@ public class CircleBehav : ActorBaseState
 
         m_MoveDirection = Random.Range(1, 10) % 2 == 0 ? Vector3.right : -Vector3.right;
     }
-
-    //IEnumerator Move()
-    //{
-    //    angle += speed * Time.deltaTime;
-    //    float x = m_Actor.TargetActor.transform.position.x + Mathf.Cos(angle) * radius;
-    //    float y = m_Actor.TargetActor.transform.position.z + Mathf.Sin(angle) * radius;
-
-    //    yield return new WaitForSeconds(2);
-
-    //    m_Actor.NavAgent.SetDestination(new Vector3(x, m_Actor.transform.position.y, y));
-    //}
 }

@@ -29,7 +29,7 @@ public class RetreatBehav : ActorBaseState
         m_Actor.LookAtTargetActor();
         MoveBack();
 
-        if (Vector3.Distance(m_Actor.Position, m_Actor.TargetActorPosition) > m_BackingDistance)
+        if (Vector3.Distance(m_Actor.Position, m_Actor.TargetActorPosition) > m_Actor.ThresholdDistance)
             m_Actor.RequestState(Actor.eStates.Circle);
     }
 

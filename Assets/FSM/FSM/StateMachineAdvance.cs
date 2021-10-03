@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 public class StateMachineAdvance : MonoBehaviour
 {
-    public bool m_IsDebug = false;
-    protected List<State> m_allStates;
+    public bool             m_IsDebug = false;
+    protected List<State>   m_allStates;
+    protected State         m_currentState;
 
-    State m_currentState;
-    State m_requestedState;
+    private State m_requestedState;
 
     public virtual void Awake()
     {
@@ -17,7 +17,7 @@ public class StateMachineAdvance : MonoBehaviour
 
 	// Use this for initialization
 	public virtual void Start ()
-   {
+    {
 
 	}
 
@@ -32,7 +32,8 @@ public class StateMachineAdvance : MonoBehaviour
                 return;
             }
         }
-        Debug.Log("Registered " + state.m_Id);
+        if(m_IsDebug)
+            Debug.Log("Registered " + state.m_Id);
         m_allStates.Add(state);
     }
 

@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,11 +13,21 @@ public class AiManager : MonoBehaviour
     private float       m_AttackTimeCounter;
 
     public float        m_AttackingInterval = 3;
+    public List<Actor>  m_AiActors;
 
     void Awake()
     {
         m_CirclingActor = new List<Actor>();
         m_CheeringActor = new List<Actor>();
+
+        //Assign random threshold distance for Ai Actors
+        List<float> numbers = Enumerable.Range(3, m_AiActors.Count).Select(x => x * 1.25f).ToList();
+        foreach (var actor in m_AiActors)
+        {
+            float y = GetRandomNumberInList(numbers);
+            Debug.Log(y);
+            actor.ThresholdDistance = y;
+        }
 
         EventManager.Instance.SubscribeToEvent(EventType.ActorBehavChange, ActorChangedBehav);
     }
@@ -43,6 +55,9 @@ public class AiManager : MonoBehaviour
         if (m_AttackingActor == message.m_Actor)
             m_AttackingActor = null;
 
+        m_CirclingActor.Remove(message.m_Actor);    //TODO change this
+        m_CheeringActor.Remove(message.m_Actor);
+
         switch (message.m_CurrentState)
         {
             case Actor.eStates.Attack:
@@ -50,7 +65,7 @@ public class AiManager : MonoBehaviour
             case Actor.eStates.Circle:
             {
                 m_CirclingActor.Add(message.m_Actor);
-                if (m_CirclingActor.Count == 5)
+                if (m_CirclingActor.Count >= 5 && m_CheeringActor.Count < 2)
                     PickActorToCheer();
                 break;
             }
@@ -99,9 +114,9 @@ public class AiManager : MonoBehaviour
         }
     }
 
-    Actor GetRandomActorFromList(List<Actor> actorList)
+    Actor GetRandomActorFromList(List<Actor> actorList)     // also removes the random actor from the given list
     {
-        int RandomIdx = Random.Range(0, actorList.Count - 1);
+        int RandomIdx = UnityEngine.Random.Range(0, actorList.Count - 1);
         Debug.Log(RandomIdx + "#@@#");
         if (actorList[RandomIdx])
         {
@@ -110,5 +125,13 @@ public class AiManager : MonoBehaviour
             return randomActor;
         }
         return null;
+    }
+
+    float GetRandomNumberInList(List<float> numbers)
+    {
+        int randIndex = UnityEngine.Random.Range(0, numbers.Count);
+        float x = numbers[randIndex];
+        numbers.Remove(x);
+        return x;
     }
 }

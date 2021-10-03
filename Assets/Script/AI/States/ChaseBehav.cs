@@ -6,8 +6,6 @@ public class ChaseBehav : ActorBaseState
 {
     public GameObject m_ChaseTarget;
 
-    public float m_TriggerDistance = 0;
-
     public ChaseBehav(Actor actor) : base(actor, Actor.eStates.Chase)
     {
         
@@ -16,16 +14,19 @@ public class ChaseBehav : ActorBaseState
     public override void OnEnter()
     {
         base.OnEnter();
+
+        m_Actor.NavAgent.enabled = true;
+        m_Actor.Controller.enabled = false;
+
         m_ChaseTarget = m_Actor.TargetActor;
         m_Actor.NavAgent.SetDestination(m_ChaseTarget.transform.position);
-        m_TriggerDistance = Random.Range(5,9);
     }
 
     public override void OnUpdate()
     {
         base.OnUpdate();
         m_Actor.NavAgent.SetDestination(m_ChaseTarget.transform.position);
-        if (Vector3.Distance(m_Actor.transform.position, m_ChaseTarget.transform.position) < m_TriggerDistance)
+        if (Vector3.Distance(m_Actor.transform.position, m_ChaseTarget.transform.position) < m_Actor.ThresholdDistance)
         {
             m_Actor.RequestState(Actor.eStates.Circle);
         }

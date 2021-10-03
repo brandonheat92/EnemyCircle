@@ -22,8 +22,10 @@ public class Actor : StateMachineAdvance
     
     public float        m_WalkSpeed;
     public float        m_RotationSpeed;
-    public Rigidbody    m_Rigidbody;
     public GameObject   m_TargetObject;
+
+    private float        m_ThresholdDistance = 0;
+    private Rigidbody    m_Rigidbody;
 
     private NavMeshAgent            m_NavMeshAgent;
     private CharacterController     m_CharController;
@@ -31,32 +33,37 @@ public class Actor : StateMachineAdvance
 #region Properties
     public Vector3 Position
     {
-        get { return transform.position; }
+        get { return transform.position; } private set { }
     }
 
     public Vector3 TargetActorPosition
     {
-        get { return TargetActor.transform.position; }
+        get { return TargetActor.transform.position; } private set { }
     }
 
     public NavMeshAgent NavAgent
     {
-        get { return m_NavMeshAgent; }
+        get { return m_NavMeshAgent; } private set { }
     }
 
     public GameObject TargetActor
     {
-        get { return m_TargetObject; }
+        get { return m_TargetObject; } private set { }
     }
 
     public Rigidbody RigidBody
     {
-        get { return m_Rigidbody; }
+        get { return m_Rigidbody; } private set { }
     }
 
     public CharacterController Controller
     {
-        get { return m_CharController; }
+        get { return m_CharController; } private set { }
+    }
+
+    public float ThresholdDistance
+    {
+        get { return m_ThresholdDistance; } set { m_ThresholdDistance = value; }
     }
 #endregion
 
@@ -97,13 +104,12 @@ public class Actor : StateMachineAdvance
     public override void Update()
     {
         base.Update();
-
         // always last //
         SwitchState();
 
-        if (Input.GetKeyUp(KeyCode.P))          //TODO : think of a situation to change this 
+        if (Input.GetKeyUp(KeyCode.P))          //TODO : thinking of a situation to change this 
         {
-            RequestState(eStates.Cheer);
+            RequestState(eStates.Chase);
         }
     }
 
